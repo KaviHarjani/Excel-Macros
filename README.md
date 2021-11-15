@@ -2,7 +2,7 @@
 I've been making VBA's occasionally for friends, have been using same code over and over sometimes, so here to share with all
 
 
-#File Sort
+# File Sort
 How does this work?
 Run the code, select multiple files from dialog and then run it
 It looks for files name, matching the name in array
