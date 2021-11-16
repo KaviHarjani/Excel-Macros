@@ -1,0 +1,80 @@
+Sub SelectMultipleFiles()
+'   Please be appreciative of the lovely work done by Kavi Harjani
+    Dim xRg As Range
+    Dim xRgUni As Range
+    Dim xFirstAddress As String
+    Dim xStr(1 To 5) As String
+    Dim sPath As String
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+
+    xStr(1) = "Population"
+    xStr(2) = "City"
+    xStr(3) = "Town"
+    xStr(4) = "Income per household"
+    xStr(5) = "Expense Per Household"
+
+
+    Dim fDialog As FileDialog
+    Set fDialog = Application.FileDialog(msoFileDialogFilePicker)
+    With fDialog
+        .AllowMultiSelect = True
+        .Title = "Please select the files"
+        .Filters.Clear
+        .Filters.Add "All supported files", "*.txt;*.edi,*.xlsx"
+        .Filters.Add "Text Files", "*.txt"
+        .Filters.Add "EDI files", "*.edi"
+
+        If .Show = True Then
+            Dim fPath As Variant
+            For Each fPath In .SelectedItems
+                Workbooks.Open Filename:=fPath
+                Filename = FSO.GetFileName(fPath)
+                filenameWoExt = Left(Filename, InStr(Filename, ".") - 1)
+                n = 0
+                For Each Item In xStr
+                    Set xRg = Range("A1:P1").Find(Item, , xlValues, xlPart, , , True)
+                    If Not xRg Is Nothing Then
+                    xFirstAddress = xRg.Address
+                    xRg.EntireColumn.Copy
+                    With ActiveSheet
+                        last = .Cells(2, .Columns.Count).End(xlToLeft).Column + 1
+                        last = CInt(last)
+                        If n = 0 Then
+                            pastehere = Range("A1").Offset(0, last + 1).PasteSpecial
+                            n = last + 2
+                        Else
+                            Range("A1").Offset(0, n).PasteSpecial
+                            n = n + 1
+                        End If
+                    End With
+                    End If
+                    Next
+                    ranger = Range("XEN2").End(xlToLeft).Address
+                    col = Split(ranger, "$")(1)
+                    rw = Range(ranger).End(xlDown).Row
+                    next_address = Range(ranger).Next.Cells(1).Address
+                    previous_address = Range(ranger).Previous.Cells(1).Address
+                    previous_address = Split(previous_address, "$")(1)
+                    next_address = Split(next_address, "$")(1)
+
+                                
+                    For i = 1 To rw
+                        If i = 1 Then
+                            Range(next_address & i).Value = "Savings"
+                        Else
+                            Range(next_address & i).Formula = "=sum(" & previous_address & i & "-" & col & i & ")"
+                        End If
+                    Next
+                    Path = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\"
+                    ActiveWorkbook.SaveAs Path & filenameWoExt + "Kavi.xls"
+                    
+                    ActiveWorkbook.Close SaveChanges:=False
+                    
+            Next
+                    
+            
+        End If
+    End With
+End Sub
+
+
