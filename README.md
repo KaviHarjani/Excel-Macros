@@ -12,3 +12,9 @@ and saves it on desktop
 
 Have added array in numbered form so it's easy for beginners to change the sort manner
 Feel free to hit me up, if you need help to customise to your use
+
+
+#Formatter
+
+Alternate lines are colored
+and can add hyperlinks based on row column
