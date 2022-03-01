@@ -1,0 +1,44 @@
+'Alternate rows will be colored
+
+Sub format()
+Dim rng As Range
+Dim FormatRuleInput As String
+Dim col, row
+
+Set rng = Application.InputBox("Select by mouse or enter (e.g. A1:B2) the range you'd like to look at:", Type:=8)
+Dim current_ad
+
+'Test to ensure User Did not cancel
+  If rng Is Nothing Then Exit Sub
+  
+col_num = Split(rng.Address, "$")(2)
+row_num = Split(rng.Address, "$")(4)
+
+col_num = Replace(col_num, ":", "")
+col_num = CInt(col_num)
+
+For Each i In rng:
+i.Font.Bold = True
+current_ad = Split(i.Address, "$")(2)
+current_ad = Replace(current_ad, ":", "")
+current_ad = CInt(current_ad)
+    If current_ad Mod 2 = 0 Then
+        i.Interior.Color = RGB(232, 231, 252)
+    Else
+        i.Interior.Color = RGB(252, 252, 252)
+    End If
+current_col = Split(i.Address, "$")(1)
+    If current_col = "C" Then
+      ActiveSheet.Hyperlinks.Add Range(i.Address), Address:="#" + i.Offset(0, 1).Value, TextToDisplay:=i.Value
+      i.Font.Bold = False
+    End If
+    If current_col = "D" Then
+      i.Value = ""
+    End If
+
+
+
+
+Next i
+
+End Sub
